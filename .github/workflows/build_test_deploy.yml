@@ -273,23 +273,6 @@ jobs:
       - run: xvfb-run node run-tests.js test/integration/with-electron/test/index.test.js
         if: ${{needs.build.outputs.docsChange == 'nope'}}
 
-  testsPass:
-    name: thank you, next
-    runs-on: ubuntu-22.04
-    needs:
-      [
-        lint,
-        check-examples,
-        test-native,
-        checkPrecompiled,
-        testIntegration,
-        testUnit,
-        testDev,
-        testProd,
-      ]
-    steps:
-      - run: exit 0
-
   testFirefox:
     name: Test Firefox (production)
     runs-on: ubuntu-22.04
