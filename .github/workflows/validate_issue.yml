@@ -1,7 +1,6 @@
 name: Validate issue
 on:
-  issues:
-    types: [labeled]
+  workflow_dispatch:
 
 jobs:
   validate:

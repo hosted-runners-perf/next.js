@@ -5,5 +5,25 @@
     { "language": "typescript", "autoFix": true },
     { "language": "typescriptreact", "autoFix": true }
   ],
-  "debug.javascript.unmapMissingSources": true
+  "debug.javascript.unmapMissingSources": true,
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#277289",
+    "activityBar.activeBorder": "#dc83c7",
+    "activityBar.background": "#277289",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#dc83c7",
+    "activityBarBadge.foreground": "#15202b",
+    "sash.hoverBorder": "#277289",
+    "statusBar.background": "#1c5161",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#277289",
+    "statusBarItem.remoteBackground": "#1c5161",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#1c5161",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#1c516199",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.remoteColor": "#1c5161"
 }

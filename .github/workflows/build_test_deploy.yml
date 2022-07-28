@@ -1,8 +1,5 @@
 on:
-  push:
-    branches: [canary]
-  pull_request:
-    types: [opened, synchronize]
+  workflow_dispatch:
 
 name: Build, test, and deploy
 
@@ -15,7 +12,7 @@ env:
 jobs:
   check-examples:
     name: Check examples
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Install moreutils
@@ -24,7 +21,7 @@ jobs:
         run: ./scripts/check-examples.sh
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       NEXT_TELEMETRY_DISABLED: 1
       # we build a dev binary for use in CI so skip downloading
@@ -94,7 +91,7 @@ jobs:
           key: ${{ github.sha }}-${{ github.run_number }}
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - name: Setup node
@@ -114,7 +111,7 @@ jobs:
       - run: pnpm lint
 
   rust-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - uses: actions/cache@v3
@@ -160,7 +157,7 @@ jobs:
 
   checkPrecompiled:
     name: Check Pre-compiled
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -206,7 +203,7 @@ jobs:
 
   testUnit:
     name: Test Unit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -240,7 +237,7 @@ jobs:
 
   testDev:
     name: Test Development
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -298,7 +295,7 @@ jobs:
 
   testDevReact17:
     name: Test Development (react v17)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -353,7 +350,7 @@ jobs:
 
   testDevE2E:
     name: Test Development (E2E)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -413,7 +410,7 @@ jobs:
 
   testDevE2EReact17:
     name: Test Development (E2E) (react v17)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -473,7 +470,7 @@ jobs:
 
   testProd:
     name: Test Production
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -521,7 +518,7 @@ jobs:
 
   testProdReact17:
     name: Test Production (react v17)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -566,7 +563,7 @@ jobs:
 
   testProdE2E:
     name: Test Production (E2E)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -616,7 +613,7 @@ jobs:
 
   testProdE2EReact17:
     name: Test Production (E2E) (react v17)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -666,7 +663,7 @@ jobs:
 
   testIntegration:
     name: Test Integration
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -724,7 +721,7 @@ jobs:
 
   testElectron:
     name: Test Electron
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -762,7 +759,7 @@ jobs:
 
   testsPass:
     name: thank you, next
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       [
         lint,
@@ -779,7 +776,7 @@ jobs:
 
   testFirefox:
     name: Test Firefox (production)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       BROWSER_NAME: 'firefox'
@@ -813,7 +810,7 @@ jobs:
 
   testSafari:
     name: Test Safari (production)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test]
     env:
       BROWSERSTACK: true
@@ -861,7 +858,7 @@ jobs:
 
   testSafariOld:
     name: Test Safari 10.1 (nav)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, testSafari, build-native-test]
     env:
       BROWSERSTACK: true
@@ -907,7 +904,7 @@ jobs:
 
   testFirefoxNode18:
     name: Test Firefox Node.js 18
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, testFirefox, build-native-test]
     env:
       BROWSER_NAME: 'firefox'
@@ -940,7 +937,7 @@ jobs:
   publishRelease:
     if: ${{ needs.build.outputs.isRelease == 'true' }}
     name: Potentially publish release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - build
       - build-wasm
@@ -983,7 +980,7 @@ jobs:
 
   testDeployE2E:
     name: E2E (deploy)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [publishRelease, build, build-native-test]
     env:
       NEXT_TELEMETRY_DISABLED: 1
@@ -1034,7 +1031,7 @@ jobs:
 
   releaseStats:
     name: Release Stats
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [publishRelease, build-native-test]
     steps:
       - name: Setup node
@@ -1252,7 +1249,7 @@ jobs:
               npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" "pnpm@${PNPM_VERSION}"
               turbo run build-native-no-plugin --cache-dir=".turbo" -- --release --target i686-pc-windows-msvc
             target: 'i686-pc-windows-msvc'
-          - host: ubuntu-latest
+          - host: ubuntu-22.04
             target: 'x86_64-unknown-linux-gnu'
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
             build: >-
@@ -1263,7 +1260,7 @@ jobs:
               npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" && if [ ! -f $(dirname $(which yarn))/pnpm ]; then ln -s $(which yarn) $(dirname $(which yarn))/pnpm;fi &&
               turbo run build-native --cache-dir=".turbo" -- --release --target x86_64-unknown-linux-gnu &&
               strip packages/next-swc/native/next-swc.*.node
-          - host: ubuntu-latest
+          - host: ubuntu-22.04
             target: 'x86_64-unknown-linux-musl'
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: >-
@@ -1285,7 +1282,7 @@ jobs:
               npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" && if [ ! -f $(dirname $(which yarn))/pnpm ]; then ln -s $(which yarn) $(dirname $(which yarn))/pnpm;fi
               turbo run build-native --cache-dir=".turbo" -- --release --target aarch64-apple-darwin
               strip -x packages/next-swc/native/next-swc.*.node
-          - host: ubuntu-latest
+          - host: ubuntu-22.04
             target: 'aarch64-unknown-linux-gnu'
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             build: >-
@@ -1306,7 +1303,7 @@ jobs:
               npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" && if [ ! -f $(dirname $(which yarn))/pnpm ]; then ln -s $(which yarn) $(dirname $(which yarn))/pnpm;fi
               turbo run build-native-no-plugin --cache-dir=".turbo" -- --release --target armv7-unknown-linux-gnueabihf
               arm-linux-gnueabihf-strip packages/next-swc/native/next-swc.*.node
-          - host: ubuntu-latest
+          - host: ubuntu-22.04
             target: aarch64-linux-android
             build: |
               export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="/usr/local/lib/android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
@@ -1316,7 +1313,7 @@ jobs:
               npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" && if [ ! -f $(dirname $(which yarn))/pnpm ]; then ln -s $(which yarn) $(dirname $(which yarn))/pnpm;fi
               turbo run build-native --cache-dir=".turbo" -- --release --target aarch64-linux-android
               /usr/local/lib/android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-strip packages/next-swc/native/next-swc.*.node
-          - host: ubuntu-latest
+          - host: ubuntu-22.04
             target: armv7-linux-androideabi
             build: |
               export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="/usr/local/lib/android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
@@ -1326,7 +1323,7 @@ jobs:
               npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" "pnpm@${PNPM_VERSION}"
               turbo run build-native-no-plugin --cache-dir=".turbo" -- --release --target armv7-linux-androideabi
               /usr/local/lib/android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-strip packages/next-swc/native/next-swc.*.node
-          - host: ubuntu-latest
+          - host: ubuntu-22.04
             target: 'aarch64-unknown-linux-musl'
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: >-
@@ -1353,7 +1350,7 @@ jobs:
         if: ${{ matrix.settings.host == 'ubuntu-18.04' }}
       - name: tune linux network
         run: sudo ethtool -K eth0 tx off rx off
-        if: ${{ matrix.settings.host == 'ubuntu-latest' }}
+        if: ${{ matrix.settings.host == 'ubuntu-22.04' }}
       - name: tune windows network
         run: Disable-NetAdapterChecksumOffload -Name * -TcpIPv4 -UdpIPv4 -TcpIPv6 -UdpIPv6
         if: ${{ matrix.settings.host == 'windows-latest' }}
@@ -1555,7 +1552,7 @@ jobs:
 
   build-wasm-dev:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/cache@v3
         if: ${{needs.build.outputs.docsChange == 'nope'}}
@@ -1615,7 +1612,7 @@ jobs:
           path: packages/next-swc/crates/wasm/pkg-nodejs
 
   check-trace-secrests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       trace-api-key: ${{ steps.trace-api-key.outputs.defined }}
     steps:
@@ -1627,7 +1624,7 @@ jobs:
 
   build-performance-metrics:
     name: Performance Metrics for Release Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build, build-native-test, check-trace-secrests]
     if: needs.check-trace-secrests.outputs.trace-api-key == 'true'
     env:
