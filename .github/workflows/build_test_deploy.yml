@@ -367,38 +367,6 @@ jobs:
       - run: '[[ -z "$BROWSERSTACK_ACCESS_KEY" ]] && echo "Skipping for PR" || node run-tests.js test/integration/production-nav/test/index.test.js'
         if: ${{needs.build.outputs.docsChange == 'nope'}}
 
-  testFirefoxNode18:
-    name: Test Firefox Node.js 18
-    runs-on: ubuntu-22.04
-    needs: [build, testFirefox, build-native-test]
-    env:
-      BROWSER_NAME: 'firefox'
-      NEXT_TELEMETRY_DISABLED: 1
-    steps:
-      - name: Setup node
-        uses: actions/setup-node@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-        with:
-          node-version: 18
-          check-latest: true
-      - uses: actions/cache@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-        id: restore-build
-        with:
-          path: ./*
-          key: ${{ github.sha }}-${{ github.run_number }}
-      - uses: actions/download-artifact@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-        with:
-          name: next-swc-test-binary
-          path: packages/next-swc/native
-      - run: npm i -g pnpm@${PNPM_VERSION}
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-      - run: npx playwright install-deps && npx playwright install firefox
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-      - run: node run-tests.js test/integration/production/test/index.test.js
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-
   publishRelease:
     if: ${{ needs.build.outputs.isRelease == 'true' }}
     name: Potentially publish release
