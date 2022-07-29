@@ -273,40 +273,6 @@ jobs:
       - run: xvfb-run node run-tests.js test/integration/with-electron/test/index.test.js
         if: ${{needs.build.outputs.docsChange == 'nope'}}
 
-  testFirefox:
-    name: Test Firefox (production)
-    runs-on: ubuntu-22.04
-    needs: [build, build-native-test]
-    env:
-      BROWSER_NAME: 'firefox'
-      NEXT_TELEMETRY_DISABLED: 1
-    steps:
-      - name: Setup node
-        uses: actions/setup-node@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-        with:
-          node-version: 16
-          check-latest: true
-
-      - uses: actions/cache@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-        id: restore-build
-        with:
-          path: ./*
-          key: ${{ github.sha }}-${{ github.run_number }}
-      - uses: actions/download-artifact@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-        with:
-          name: next-swc-test-binary
-          path: packages/next-swc/native
-      - run: npx playwright install-deps && npx playwright install firefox
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-      - run: node run-tests.js test/integration/production/test/index.test.js
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-      # test rsc hydration on firefox due to limited support of TransformStream api
-      - run: npm i -g pnpm@${PNPM_VERSION}
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
-
   testSafari:
     name: Test Safari (production)
     runs-on: ubuntu-22.04
